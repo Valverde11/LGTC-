@@ -1,4 +1,4 @@
-package graph;
+package algorithms;
 
 
 public class Parcel {

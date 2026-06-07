@@ -1,5 +1,6 @@
 package graph;
 
+import algorithms.Parcel;
 import util.LinkedList;
 
 /**
