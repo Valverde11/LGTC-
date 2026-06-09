@@ -1,36 +1,76 @@
 package graph;
 
 /**
- * Represents an undirected weighted edge (street) in the city graph.
- * Weight is distance in metres (positive integer).
+ * Representa una arista no dirigida ponderada (calle bidireccional) en el grafo de la ciudad.
+ * El peso de la arista corresponde a la distancia en metros entre los dos vértices.
+ *
+ * <p>Implementa {@link Comparable} por peso para ser usada en el ordenamiento
+ * que realiza el algoritmo de Kruskal.
  *
  * @author LogísTEC Team
  * @version 1.0
  */
 public class Edge implements Comparable<Edge> {
 
-    private final int    u;        // index of first vertex
-    private final int    v;        // index of second vertex
-    private final int    weight;   // distance in metres
+    private final int u;
+    private final int v;
+    private final int weight;
 
+    /**
+     * Crea una arista entre los vértices {@code u} y {@code v} con el peso indicado.
+     *
+     * @param u      Índice del primer extremo de la arista.
+     * @param v      Índice del segundo extremo de la arista.
+     * @param weight Peso de la arista en metros (debe ser un entero positivo).
+     */
     public Edge(int u, int v, int weight) {
         this.u      = u;
         this.v      = v;
         this.weight = weight;
     }
 
-    public int getU()      { return u; }
-    public int getV()      { return v; }
+    /**
+     * Retorna el índice del primer extremo de la arista.
+     *
+     * @return Índice del vértice u.
+     */
+    public int getU() { return u; }
+
+    /**
+     * Retorna el índice del segundo extremo de la arista.
+     *
+     * @return Índice del vértice v.
+     */
+    public int getV() { return v; }
+
+    /**
+     * Retorna el peso de la arista (distancia en metros).
+     *
+     * @return Peso de la arista.
+     */
     public int getWeight() { return weight; }
 
-    /** The other endpoint given one endpoint. */
+    /**
+     * Dado un extremo de la arista, retorna el extremo opuesto.
+     * Útil para recorrer la lista de adyacencia sin saber cuál es el origen.
+     *
+     * @param vertex Índice de uno de los extremos de la arista.
+     * @return Índice del extremo opuesto.
+     * @throws IllegalArgumentException Si {@code vertex} no es ninguno de los extremos.
+     */
     public int other(int vertex) {
         if (vertex == u) return v;
         if (vertex == v) return u;
-        throw new IllegalArgumentException("Vertex " + vertex + " not in edge (" + u + "," + v + ")");
+        throw new IllegalArgumentException("Vértice " + vertex + " no pertenece a la arista (" + u + "," + v + ")");
     }
 
-    /** Natural ordering by weight — used by Kruskal's sorting step. */
+    /**
+     * Compara esta arista con otra por su peso en orden ascendente.
+     * Usado por el algoritmo de Kruskal para ordenar las aristas.
+     *
+     * @param o La otra arista con la que se compara.
+     * @return Valor negativo si esta arista pesa menos, positivo si pesa más, cero si son iguales.
+     */
     @Override
     public int compareTo(Edge o) {
         return Integer.compare(this.weight, o.weight);
