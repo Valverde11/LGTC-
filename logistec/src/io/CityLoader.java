@@ -1,12 +1,11 @@
 package io;
 
+import algorithms.Parcel;
 import graph.*;
-import io.JsonParser.*;
 import io.JsonParser.JsonArray;
 import io.JsonParser.JsonObject;
 import java.io.IOException;
 import util.LinkedList;
-
 /**
  * Cargador de configuración para el sistema LogísTEC.
  *
