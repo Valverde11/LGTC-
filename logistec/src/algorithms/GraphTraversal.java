@@ -5,28 +5,45 @@ import util.LinkedList;
 import util.Queue;
 import util.Stack;
 
+/**
+ * Algoritmos de recorrido de grafos: BFS y DFS. Complejidad O(V+E).
+ * Clase utilitaria: no instanciable.
+ *
+ * @author LogísTEC Team
+ * @version 1.0
+ */
 public class GraphTraversal {
 
-    private GraphTraversal() {} // utility class
+    /** Constructor privado — clase utilitaria. */
+    private GraphTraversal() {}
 
-    // ── BFS ──────────────────────────────────────────────────────────────────
-
+    /**
+     * BFS desde {@code src}. Visita por niveles usando cola FIFO.
+     *
+     * @param g   Grafo a recorrer.
+     * @param src Vértice origen.
+     * @return Lista de vértices en orden BFS.
+     */
     public static LinkedList<Integer> bfs(Graph g, int src) {
         int V = g.numVertices();
-        boolean[] visited = new boolean[V];
-        LinkedList<Integer> order = new LinkedList<>();
-        Queue<Integer> queue = new Queue<>();
+        boolean[]           visited = new boolean[V];
+        LinkedList<Integer> order   = new LinkedList<>();
+        Queue<Integer>      queue   = new Queue<>();
 
+        // Arrancamos marcando el origen como visitado antes de encolarlo
+        // (evita procesarlo más de una vez si aparece en múltiples listas de adyacencia)
         visited[src] = true;
         queue.enqueue(src);
 
         while (!queue.isEmpty()) {
-            int u = queue.dequeue();
-            order.addLast(u);
+            int u = queue.dequeue(); // procesamos el frente de la cola
+            order.addLast(u);        // registramos el orden de visita
+
+            // Exploramos todos los vecinos de u
             for (Graph.AdjEntry e : g.adj(u)) {
                 if (!visited[e.target]) {
-                    visited[e.target] = true;
-                    queue.enqueue(e.target);
+                    visited[e.target] = true;      // marcamos antes de encolar
+                    queue.enqueue(e.target);        // añadimos al siguiente nivel
                 }
             }
         }
@@ -34,20 +51,22 @@ public class GraphTraversal {
     }
 
     /**
-     * BFS that also fills the {@code parent} array (used for path reconstruction).
+     * BFS con registro de predecesores para reconstrucción de caminos.
      *
-     * @param  g       the graph
-     * @param  src     source vertex index
-     * @param  parent  int[V] output — parent[v] = predecessor of v in BFS tree, or -1
-     * @return list of vertices in BFS order
+     * @param g      Grafo a recorrer.
+     * @param src    Vértice origen.
+     * @param parent Arreglo de salida; {@code parent[v]} = predecesor de v en BFS o -1.
+     * @return Lista de vértices en orden BFS.
      */
     public static LinkedList<Integer> bfs(Graph g, int src, int[] parent) {
         int V = g.numVertices();
-        boolean[] visited = new boolean[V];
-        LinkedList<Integer> order = new LinkedList<>();
-        Queue<Integer> queue = new Queue<>();
+        boolean[]           visited = new boolean[V];
+        LinkedList<Integer> order   = new LinkedList<>();
+        Queue<Integer>      queue   = new Queue<>();
 
+        // Inicializamos todos los predecesores en -1 (sin predecesor conocido)
         for (int i = 0; i < V; i++) parent[i] = -1;
+
         visited[src] = true;
         queue.enqueue(src);
 
@@ -57,7 +76,7 @@ public class GraphTraversal {
             for (Graph.AdjEntry e : g.adj(u)) {
                 if (!visited[e.target]) {
                     visited[e.target] = true;
-                    parent[e.target] = u;
+                    parent[e.target]  = u;          // u es el predecesor de e.target
                     queue.enqueue(e.target);
                 }
             }
@@ -65,33 +84,34 @@ public class GraphTraversal {
         return order;
     }
 
-    // ── DFS ──────────────────────────────────────────────────────────────────
-
     /**
-     * Depth-First Search from source vertex {@code src} (iterative, using a stack).
-     * <p>
-     * Avoids stack-overflow for large graphs — suitable for production use.
+     * DFS iterativo desde {@code src} usando pila LIFO.
+     * Versión iterativa para evitar StackOverflowError en grafos grandes.
      *
-     * @param  g   the graph
-     * @param  src source vertex index
-     * @return list of vertex indices in DFS visit order
+     * @param g   Grafo a recorrer.
+     * @param src Vértice origen.
+     * @return Lista de vértices en orden DFS.
      */
     public static LinkedList<Integer> dfs(Graph g, int src) {
         int V = g.numVertices();
-        boolean[] visited = new boolean[V];
-        LinkedList<Integer> order = new LinkedList<>();
-        Stack<Integer> stack = new Stack<>();
+        boolean[]           visited = new boolean[V];
+        LinkedList<Integer> order   = new LinkedList<>();
+        Stack<Integer>      stack   = new Stack<>();
 
         stack.push(src);
+
         while (!stack.isEmpty()) {
             int u = stack.pop();
+
+            // Verificamos al desapilar (no al apilar) porque un mismo nodo
+            // puede ser apilado múltiples veces antes de ser procesado
             if (visited[u]) continue;
+
             visited[u] = true;
             order.addLast(u);
-            // Push neighbours in reverse order so we visit in natural order
-            LinkedList<Graph.AdjEntry> neighbours = g.adj(u);
-            // collect into array then push reversed
-            Object[] arr = neighbours.toArray();
+
+            // Apilamos vecinos en orden inverso para visitar en el orden natural
+            Object[] arr = g.adj(u).toArray();
             for (int i = arr.length - 1; i >= 0; i--) {
                 Graph.AdjEntry e = (Graph.AdjEntry) arr[i];
                 if (!visited[e.target]) stack.push(e.target);
@@ -101,18 +121,20 @@ public class GraphTraversal {
     }
 
     /**
-     * Recursive DFS pre-order starting at {@code src}.
-     * Fills {@code order} with visited vertex indices.
-     * Used for MST pre-order traversal (heuristic routing).
+     * DFS preorden recursivo desde {@code src}.
+     * Usado para recorrer el MST en la heurística MST-based de ruteo.
      *
-     * @param g       the graph (or MST adjacency list)
-     * @param src     current vertex
-     * @param visited boolean[V] visited flags
-     * @param order   output list
+     * @param g       Grafo (o subgrafo MST) a recorrer.
+     * @param src     Vértice actual en la recursión.
+     * @param visited Arreglo de flags de visita compartido entre llamadas.
+     * @param order   Lista de salida donde se acumulan los vértices en preorden.
      */
     public static void dfsPreorder(Graph g, int src, boolean[] visited, LinkedList<Integer> order) {
+        // Preorden: procesamos el nodo ANTES de recurrir en sus hijos
         visited[src] = true;
         order.addLast(src);
+
+        // Recursamos en cada vecino no visitado (en el MST cada nodo tiene a lo sumo un hijo por rama)
         for (Graph.AdjEntry e : g.adj(src)) {
             if (!visited[e.target]) {
                 dfsPreorder(g, e.target, visited, order);
@@ -120,33 +142,48 @@ public class GraphTraversal {
         }
     }
 
-    // ── Connected components ─────────────────────────────────────────────────
-
     /**
-     * Return the number of connected components in the graph.
-     * O(V + E).
+     * Cuenta el número de componentes conexas usando BFS. O(V+E).
+     *
+     * @param g Grafo a analizar.
+     * @return Número de componentes conexas.
      */
     public static int connectedComponents(Graph g) {
-        int V = g.numVertices();
+        int       V       = g.numVertices();
         boolean[] visited = new boolean[V];
-        int count = 0;
+        int       count   = 0;
+
+        // Lanzamos un BFS desde cada vértice no visitado.
+        // Cada BFS cubre exactamente una componente conexa.
         for (int i = 0; i < V; i++) {
             if (!visited[i]) {
-                bfsVisit(g, i, visited);
-                count++;
+                bfsVisit(g, i, visited); // marca todos los alcanzables desde i
+                count++;                 // una nueva componente descubierta
             }
         }
         return count;
     }
 
+    /**
+     * BFS auxiliar que solo marca vértices como visitados (sin retornar orden).
+     * Usado por {@link #connectedComponents(Graph)}.
+     *
+     * @param g       Grafo a recorrer.
+     * @param src     Vértice de inicio.
+     * @param visited Arreglo compartido de flags de visita.
+     */
     private static void bfsVisit(Graph g, int src, boolean[] visited) {
         Queue<Integer> q = new Queue<>();
         visited[src] = true;
         q.enqueue(src);
         while (!q.isEmpty()) {
             int u = q.dequeue();
-            for (Graph.AdjEntry e : g.adj(u))
-                if (!visited[e.target]) { visited[e.target] = true; q.enqueue(e.target); }
+            for (Graph.AdjEntry e : g.adj(u)) {
+                if (!visited[e.target]) {
+                    visited[e.target] = true;
+                    q.enqueue(e.target);
+                }
+            }
         }
     }
 }
