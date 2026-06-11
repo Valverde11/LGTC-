@@ -92,6 +92,10 @@ public class ReportGenerator {
         for (Edge e : prim.getMSTEdges())
             sb.append(String.format("    %-4s -- %-4s  [%dm]\n", vId(e.getU()), vId(e.getV()), e.getWeight()));
 
+        sb.append("\n  Aristas MST (Kruskal):\n");
+        for (Edge e : kruskal.getMSTEdges())
+            sb.append(String.format("    %-4s -- %-4s  [%dm]\n", vId(e.getU()), vId(e.getV()), e.getWeight()));
+        
         section(sb, "MATRIZ DE DISTANCIAS MINIMAS (Floyd-Warshall)");
         sb.append(fw.matrixToString(graph)).append("\n");
 
