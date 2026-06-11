@@ -22,7 +22,7 @@ import util.LinkedList;
  *
  * <p>El flujo de uso es: Cargar JSON → Ejecutar Planificación → explorar resultados.
  *
- * @author LogísTEC Team
+ * @author Andres Aguilar
  * @version 1.0
  */
 public class MainWindow extends JFrame {

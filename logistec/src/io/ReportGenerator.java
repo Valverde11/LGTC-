@@ -11,7 +11,7 @@ import util.LinkedList;
  * resumen del grafo, cierre transitivo, paquetes, MST, matriz de Floyd-Warshall,
  * rutas por camión y paquetes rechazados.
  *
- * @author LogísTEC Team
+ * @author Andres Aguilar
  * @version 1.0
  */
 public class ReportGenerator {

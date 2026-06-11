@@ -11,7 +11,7 @@ import java.nio.file.*;
  * strings, números enteros/decimales y booleanos.
  * No utiliza ninguna librería externa.
  *
- * @author LogísTEC Team
+ * @author Andres Aguilar
  * @version 1.0
  */
 public class JsonParser {

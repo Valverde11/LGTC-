@@ -26,7 +26,7 @@ import util.LinkedList;
  *   <li>Leyenda</li>
  * </ol>
  *
- * @author LogísTEC Team
+ * @author Andres Aguilar
  * @version 1.0
  */
 public class GraphPanel extends JPanel {

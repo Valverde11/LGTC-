@@ -24,7 +24,7 @@ import util.LinkedList;
  * }
  * </pre>
  *
- * @author LogísTEC Team
+ * @author Andres Aguilar
  * @version 1.0
  */
 public class CityLoader {
