@@ -1,0 +1,372 @@
+@startuml LogisTEC Architecture
+!theme plain
+skinparam backgroundColor #f5f5f5
+skinparam roundcorner 10
+skinparam classBorderColor #333
+skinparam classBackgroundColor #fff
+
+' ============================================================================
+' CAPA 1: TIPOS DE DATOS ABSTRACTOS (TDAs)
+' ============================================================================
+package "util: Estructuras de Datos" #FFE6E6 {
+    abstract class "LinkedList<T>" {
+        - head: Node<T>
+        - tail: Node<T>
+        - size: int
+        + addLast(item: T): void
+        + addFirst(item: T): void
+        + removeFirst(): T
+        + remove(i: int): T
+        + get(i: int): T
+        + contains(item: T): boolean
+        + size(): int
+        + isEmpty(): boolean
+        + toArray(): T[]
+        + iterator(): Iterator<T>
+    }
+
+    class "MinHeap<T>" {
+        - heap: Entry<T>[]
+        - size: int
+        + insert(item: T, key: double): void
+        + extractMin(): T
+        + peekMin(): T
+        + decreaseKey(item: T, newKey: double): void
+        + getKey(item: T): double
+        + contains(item: T): boolean
+        - siftUp(i: int): void
+        - siftDown(i: int): void
+        - grow(): void
+    }
+
+    class "UnionFind" {
+        - parent: int[]
+        - rank: int[]
+        - components: int
+        + find(x: int): int
+        + union(x: int, y: int): boolean
+        + connected(x: int, y: int): boolean
+        + components(): int
+    }
+
+    class "Queue<T>" {
+        - list: LinkedList<T>
+        + enqueue(item: T): void
+        + dequeue(): T
+        + peek(): T
+        + isEmpty(): boolean
+        + size(): int
+    }
+
+    class "Stack<T>" {
+        - list: LinkedList<T>
+        + push(item: T): void
+        + pop(): T
+        + peek(): T
+        + isEmpty(): boolean
+        + size(): int
+    }
+}
+
+' ============================================================================
+' CAPA 2: MODELADO DEL DOMINIO - GRAFO Y OBJETOS
+' ============================================================================
+package "graph: Grafo y Entidades de Dominio" #E6F2FF {
+    class "Vertex" {
+        - id: String
+        - type: Type [DEPOT | INTERSECTION | DELIVERY]
+        - x: int
+        - y: int
+        + getId(): String
+        + getType(): Type
+        + getX(): int
+        + getY(): int
+        + isDepot(): boolean
+        + isDelivery(): boolean
+    }
+
+    class "Edge" <<implements Comparable>> {
+        - u: int
+        - v: int
+        - weight: int
+        + getU(): int
+        + getV(): int
+        + getWeight(): int
+        + other(vertex: int): int
+        + compareTo(o: Edge): int
+    }
+
+    class "Graph" {
+        - vertices: Vertex[]
+        - adj: LinkedList<AdjEntry>[]
+        - edges: LinkedList<Edge>
+        - V: int
+        - E: int
+        - depotIndex: int
+        + addVertex(index: int, v: Vertex): void
+        + addEdge(u: int, v: int, weight: int): void
+        + indexOf(id: String): int
+        + numVertices(): int
+        + numEdges(): int
+        + getVertex(i: int): Vertex
+        + getDepotIndex(): int
+        + adj(v: int): LinkedList<AdjEntry>
+        + getAllEdges(): LinkedList<Edge>
+        + adjacencyMatrix(): int[][]
+        + booleanMatrix(): boolean[][]
+        + vertexIndices(): int[]
+    }
+
+    class "Graph.AdjEntry" {
+        - target: int
+        - weight: int
+        + AdjEntry(target: int, weight: int)
+    }
+
+    class "Truck" {
+        - id: String
+        - capacity: int
+        - currentLoad: int
+        - packages: LinkedList<Parcel>
+        - route: LinkedList<Integer>
+        - expandedRoute: LinkedList<Integer>
+        - routeDistanceNN: int
+        - routeDistanceMST: int
+        + getId(): String
+        + getCapacity(): int
+        + getCurrentLoad(): int
+        + getFreeCapacity(): int
+        + getPackages(): LinkedList<Parcel>
+        + getRoute(): LinkedList<Integer>
+        + getExpandedRoute(): LinkedList<Integer>
+        + getRouteDistanceNN(): int
+        + getRouteDistanceMST(): int
+        + addPackage(p: Parcel): boolean
+        + canFit(p: Parcel): boolean
+        + occupancyPercent(): double
+    }
+}
+
+package "algorithms: Dominio de Paquetes" #FFE6F2 {
+    class "Parcel" {
+        - id: String
+        - destinationId: String
+        - destinationIndex: int
+        - weight: int
+        - priority: int [1..3]
+        - status: Status [PENDING | ASSIGNED | REJECTED]
+        - assignedTruck: String
+        + getId(): String
+        + getDestinationId(): String
+        + getDestinationIndex(): int
+        + setDestinationIndex(i: int): void
+        + getWeight(): int
+        + getPriority(): int
+        + getStatus(): Status
+        + getAssignedTruck(): String
+        + assign(truckId: String): void
+        + reject(): void
+    }
+}
+
+' ============================================================================
+' CAPA 3: ALGORITMOS
+' ============================================================================
+package "algorithms: Algoritmos de Grafos" #F2FFE6 {
+    class "GraphTraversal" {
+        + {static} dfsPreorder(g: Graph, src: int, visited: boolean[], result: LinkedList<Integer>): void
+        + {static} bfsOrder(g: Graph, src: int): LinkedList<Integer>
+    }
+
+    class "Dijkstra" {
+        - src: int
+        - V: int
+        - dist: int[]
+        - prev: int[]
+        + Dijkstra(g: Graph, src: int)
+        + distanceTo(dst: int): int
+        + hasPath(dst: int): boolean
+        + pathTo(dst: int): LinkedList<Integer>
+        + getDistances(): int[]
+        + getPrev(): int[]
+        + getSource(): int
+        + resultToString(g: Graph, dst: int): String
+    }
+
+    class "FloydWarshall" {
+        - V: int
+        - dist: int[][]
+        - next: int[][]
+        + FloydWarshall(g: Graph)
+        + dist(u: int, v: int): int
+        + reconstructPath(u: int, v: int): int[]
+        + getDistMatrix(): int[][]
+    }
+
+    class "Warshall" {
+        - V: int
+        - reach: boolean[][]
+        + Warshall(g: Graph)
+        + canReach(u: int, v: int): boolean
+        + getReachMatrix(): boolean[][]
+    }
+
+    class "Kruskal" {
+        - mstEdges: LinkedList<Edge>
+        - totalWeight: int
+        - elapsedNano: long
+        + Kruskal(g: Graph)
+        + getMSTEdges(): LinkedList<Edge>
+        + getTotalWeight(): int
+        + getElapsedMs(): double
+        + buildMSTGraph(V: int): Graph
+        - sortEdges(arr: Edge[], lo: int, hi: int): void
+        - merge(arr: Edge[], lo: int, mid: int, hi: int): void
+    }
+
+    class "Prim" {
+        - V: int
+        - mstEdges: LinkedList<Edge>
+        - totalWeight: int
+        + Prim(g: Graph, src: int)
+        + getMSTEdges(): LinkedList<Edge>
+        + getTotalWeight(): int
+        + buildMSTGraph(V: int): Graph
+    }
+}
+
+' ============================================================================
+' CAPA 4: COORDINADOR CENTRAL - PLANNER
+' ============================================================================
+package "planner: Orquestación de Algoritmos" #F2E6FF {
+    class "Planner" {
+        - graph: Graph
+        - fw: FloydWarshall
+        - warshall: Warshall
+        - depotIdx: int
+        + Planner(graph: Graph, fw: FloydWarshall, warshall: Warshall)
+        + validateReachability(packages: LinkedList<Parcel>): LinkedList<Parcel>
+        + assignPackages(packages: LinkedList<Parcel>, trucks: LinkedList<Truck>): LinkedList<Parcel>
+        + planRoutes(trucks: LinkedList<Truck>): void
+        + nearestNeighbor(stops: int[]): int[]
+        + mstBased(stops: int[]): int[]
+        + routeDistance(route: int[]): int
+        - planRoutesForTruck(truck: Truck): void
+        - toSortedArray(packages: LinkedList<Parcel>): Parcel[]
+        - comparePackages(a: Parcel, b: Parcel): int
+    }
+}
+
+' ============================================================================
+' CAPA 5: I/O Y PRESENTACIÓN
+' ============================================================================
+package "io: Entrada/Salida" #FFE6CC {
+    class "CityLoader" {
+        + {static} loadCityData(graphPath: String, parcelsPath: String, trucksPath: String): void
+    }
+
+    class "JsonParser" {
+        + {static} parseJson(jsonStr: String): Object
+    }
+
+    class "ReportGenerator" {
+        + {static} generateReport(trucks: LinkedList<Truck>, parcels: LinkedList<Parcel>): String
+    }
+}
+
+package "ui: Interfaz Gráfica" #CCFFFF {
+    class "MainWindow" {
+        - frame: JFrame
+        - graphPanel: GraphPanel
+        - graph: Graph
+        - trucks: LinkedList<Truck>
+        - parcels: LinkedList<Parcel>
+        + MainWindow(title: String, width: int, height: int)
+        + setGraph(g: Graph): void
+        + setTrucks(trucks: LinkedList<Truck>): void
+        + setParcels(parcels: LinkedList<Parcel>): void
+        + showReport(report: String): void
+    }
+
+    class "GraphPanel" {
+        - graph: Graph
+        - trucks: LinkedList<Truck>
+        - zoom: double
+        - offsetX: int
+        - offsetY: int
+        + GraphPanel(graph: Graph)
+        + setTrucks(trucks: LinkedList<Truck>): void
+        + paintComponent(g: Graphics): void
+        - drawGraph(g: Graphics2D): void
+        - drawTruckRoutes(g: Graphics2D): void
+    }
+}
+
+class "Main" {
+    + {static} main(args: String[]): void
+}
+
+' ============================================================================
+' RELACIONES
+' ============================================================================
+
+' Relaciones TDAs con Graph
+Graph "1" --> "*" Vertex : contiene
+Graph "1" --> "*" Edge : contiene
+Graph "1" --> "*" "LinkedList<AdjEntry>" : adj
+Graph --> "LinkedList<Edge>" : edges
+Graph --> "Graph.AdjEntry" : AdjEntry
+
+' Queue y Stack usan LinkedList
+Queue --> LinkedList : usa
+Stack --> LinkedList : usa
+
+' Truck usa LinkedList para paquetes y rutas
+Truck --> "LinkedList<Parcel>" : packages
+Truck --> "LinkedList<Integer>" : route
+
+' Algoritmos usan Graph
+Dijkstra --> Graph : analiza
+Dijkstra --> MinHeap : usa
+Dijkstra --> LinkedList : retorna
+FloydWarshall --> Graph : analiza
+Warshall --> Graph : analiza
+Kruskal --> Graph : analiza
+Kruskal --> UnionFind : usa
+Kruskal --> Edge : ordena
+Kruskal --> LinkedList : retorna
+Prim --> Graph : analiza
+Prim --> MinHeap : usa
+GraphTraversal --> Graph : analiza
+GraphTraversal --> LinkedList : retorna
+
+' Planner orquesta
+Planner --> Graph : usa
+Planner --> FloydWarshall : usa
+Planner --> Warshall : usa
+Planner --> Truck : planifica
+Planner --> Parcel : valida y asigna
+Planner --> Kruskal : usa (MST-based)
+Planner --> GraphTraversal : usa (DFS)
+
+' I/O
+CityLoader --> Graph : construye
+CityLoader --> JsonParser : usa
+ReportGenerator --> Truck : genera desde
+ReportGenerator --> Parcel : genera desde
+
+' UI
+MainWindow --> GraphPanel : contiene
+MainWindow --> Graph : muestra
+MainWindow --> Truck : visualiza
+MainWindow --> Parcel : visualiza
+GraphPanel --> Graph : dibuja
+GraphPanel --> Truck : dibuja rutas
+
+' Main
+Main --> CityLoader : carga datos
+Main --> Planner : ejecuta
+Main --> MainWindow : muestra
+Main --> ReportGenerator : genera
+
+@enduml
