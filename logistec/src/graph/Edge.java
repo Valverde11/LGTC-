@@ -7,7 +7,7 @@ package graph;
  * <p>Implementa {@link Comparable} por peso para ser usada en el ordenamiento
  * que realiza el algoritmo de Kruskal.
  *
- * @author LogísTEC Team
+ * @author Pablo V
  * @version 1.0
  */
 public class Edge implements Comparable<Edge> {

@@ -1,7 +1,7 @@
 package graph;
 
-import util.LinkedList;
 import algorithms.Parcel;
+import util.LinkedList;
 /**
  * Representa un camión de reparto en la flota de LogísTEC.
  *
@@ -13,7 +13,7 @@ import algorithms.Parcel;
  *       las calles reales, reconstruido con Floyd-Warshall.</li>
  * </ul>
  *
- * @author LogísTEC Team
+ * @author Pablo V
  * @version 1.0
  */
 public class Truck {

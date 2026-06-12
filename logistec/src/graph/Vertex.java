@@ -8,7 +8,7 @@ package graph;
  * e INTERSECTION para las intersecciones viales normales.
  * Las coordenadas {@code x} e {@code y} se usan para la visualización gráfica.
  *
- * @author LogísTEC Team
+ * @author Pablo V
  * @version 1.0
  */
 public class Vertex {

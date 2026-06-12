@@ -11,7 +11,7 @@ import util.LinkedList;
  *
  * <p>Complejidad de espacio: O(V + E).
  *
- * @author LogísTEC Team
+ * @author Pablo V
  * @version 1.0
  */
 public class Graph {

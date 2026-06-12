@@ -12,7 +12,7 @@ import util.LinkedList;
  * 2. Best-Fit asigna paquetes a camiones por capacidad.
  * 3. Nearest Neighbor y MST-based generan rutas; se elige la mejor.
  *
- * @author LogísTEC Team
+ * @author Pablo V
  * @version 1.0
  */
 public class Planner {
