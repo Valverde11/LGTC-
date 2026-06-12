@@ -11,8 +11,7 @@ import util.MinHeap;
  * <p>Usa la cola de prioridad propia {@link MinHeap} en lugar de {@code java.util.PriorityQueue}.
  * Complejidad: O((V + E) log V).
  *
- * @author LogísTEC Team
- * @version 1.0
+ * @author Alejandro Arias Lopez
  */
 public class Dijkstra {
 

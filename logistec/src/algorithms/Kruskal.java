@@ -9,8 +9,7 @@ import util.UnionFind;
  * Algoritmo de Kruskal para el Árbol de Expansión Mínima (MST).
  * Ordena aristas por peso y las agrega si no forman ciclo. O(E log E).
  *
- * @author LogísTEC Team
- * @version 1.0
+ * @author Alejandro Arias Lopez
  */
 public class Kruskal {
 

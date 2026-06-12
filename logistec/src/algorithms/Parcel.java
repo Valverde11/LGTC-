@@ -8,8 +8,7 @@ package algorithms;
  * largo del proceso: inicia como PENDING, luego se asigna a un camión
  * (ASSIGNED) o se rechaza por ser inalcanzable o sin capacidad (REJECTED).
  *
- * @author LogísTEC Team
- * @version 1.0
+ * @author Alejandro Arias Lopez
  */
 public class Parcel {
 

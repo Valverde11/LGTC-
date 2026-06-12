@@ -6,8 +6,7 @@ import graph.Graph;
  * Algoritmo de Warshall para el cierre transitivo de un grafo.
  * Determina alcanzabilidad entre todos los pares de vértices en O(V³).
  *
- * @author LogísTEC Team
- * @version 1.0
+ * @author Alejandro Arias Lopez
  */
 public class Warshall {
 

@@ -9,8 +9,7 @@ import util.Stack;
  * Algoritmos de recorrido de grafos: BFS y DFS. Complejidad O(V+E).
  * Clase utilitaria: no instanciable.
  *
- * @author LogísTEC Team
- * @version 1.0
+ * @author Alejandro Arias Lopez
  */
 public class GraphTraversal {
 

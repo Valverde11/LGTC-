@@ -10,8 +10,7 @@ import util.MinHeap;
  * Crece el árbol vértice por vértice eligiendo siempre la arista frontera de menor peso.
  * Complejidad: O((V + E) log V) con heap binario.
  *
- * @author LogísTEC Team
- * @version 1.0
+ * @author Alejandro Arias Lopez
  */
 public class Prim {
 

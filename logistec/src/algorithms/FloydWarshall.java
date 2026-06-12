@@ -6,8 +6,7 @@ import graph.Graph;
  * Algoritmo de Floyd-Warshall para calcular caminos mínimos entre todos los pares de vértices.
  * Complejidad: O(V³) tiempo, O(V²) espacio.
  *
- * @author LogísTEC Team
- * @version 1.0
+ * @author Alejandro Arias Lopez
  */
 public class FloydWarshall {
 
